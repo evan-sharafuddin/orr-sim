@@ -8,14 +8,14 @@
 
 clear
 clc
-% close all
+close all
 
 %%% Set Model Params %%%
-pc = 10; % photon count
+pc = 5; % photon count
 
 %%% Load Image %%%
 MAXPIXEL = 255; 
-img = imread("phantom.png", "png");
+img = imread("Huerthle-cell-carcinoma-AgNOR-staining-x-1-073.png", "png");
 img_norm = double( img ) / MAXPIXEL;
 
 PRINT_FIGS = 1;
@@ -95,7 +95,7 @@ c.Label.FontWeight = "bold";
 
 % (3) Mean squared error based on reference image
 % TODO not sure if this is a completely valid metric
-rmse_ORR = sqrt( sum(sum((ORR - img_norm)^2/numel(ORR))) );
+rmse_ORR = sqrt( sum(sum( (ORR - img_norm).^2 ))/numel(ORR) );
 fprintf("RMSE error metric for %d photon counts: %.5f\n", pc, rmse_ORR)
 
 

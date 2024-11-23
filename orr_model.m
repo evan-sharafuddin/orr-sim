@@ -33,13 +33,13 @@ FAD = img_norm * pc;
 NADH = pc - FAD;
 
 % round values
-FAD = round( FAD );
+FAD  = round( FAD );
 NADH = round( NADH );
 
 %%% Calculate Shot Noise %%%
 % ASSUMPTION: treat phantom image as expected value for photon count per 
 % pixel
-FAD_sn = poissrnd(FAD);
+FAD_sn  = poissrnd(FAD);
 NADH_sn = poissrnd(NADH);
 
 
@@ -147,36 +147,56 @@ ORR( isnan(ORR) ) = 0;
 
 if DISP_FIGURES 
     
-    % Display intermediaries 
+    %%% Display Figures Individually
     figure
-    ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
-    axes(ha(1)), imshow( FAD/max(max(FAD)) )
-    title("FAD (no noise)")
-    axes(ha(2)), imshow( NADH/max(max(NADH)) )
-    title("NADH (no noise)")
+    imshow(img_norm)
+    title("Ground Truth Image", 'FontWeight', 'bold', ...
+          'FontSize', 35)
+    xlim([150 450]), ylim([150 450])
+    set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+    ax = gca;
+    ax.PositionConstraint = "outerposition";
+    saveas(gcf, 'cell_og.png', 'png')
     
     figure
-    ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
-    axes(ha(1)), imshow( FAD_sn/max(max(FAD_sn)) )
-    title("FAD (with Poisson shot noise)")
-    axes(ha(2)), imshow( NADH_sn/max(max(NADH_sn)) )
-    title("NADH (with Poisson shot noise)")
-    
-    figure
-    ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
-    axes(ha(1)), imshow( (FAD + FAD_dc) / max(max( FAD + FAD_dc )) )
-    title("FAD (with dark count noise)")
-    axes(ha(2)), imshow( (NADH + NADH_dc) / max(max( NADH + NADH_dc )) )
-    title("NADH (with dark count noise)")
-    
-    
-    % Display original & final images
-    figure
-    ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
-    axes(ha(1)), imshow(img_norm)
-    title("Original Phantom Image (normalized)")
-    axes(ha(2)), imshow(ORR)
-    title("Simulated ORR Image")
+    imshow(ORR)
+    title(sprintf("Simulated ORR Image | %d PC", pc), 'FontWeight', 'bold', ...
+          'FontSize', 35)
+    xlim([150 450]), ylim([150 450])
+    set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+    saveas(gcf, sprintf('cell_%d.png', pc), 'png')
+
+
+    % %%% Display intermediaries 
+    % figure
+    % ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
+    % axes(ha(1)), imshow( FAD/max(max(FAD)) )
+    % title("FAD (no noise)")
+    % axes(ha(2)), imshow( NADH/max(max(NADH)) )
+    % title("NADH (no noise)")
+    % 
+    % figure
+    % ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
+    % axes(ha(1)), imshow( FAD_sn/max(max(FAD_sn)) )
+    % title("FAD (with Poisson shot noise)")
+    % axes(ha(2)), imshow( NADH_sn/max(max(NADH_sn)) )
+    % title("NADH (with Poisson shot noise)")
+    % 
+    % figure
+    % ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
+    % axes(ha(1)), imshow( (FAD + FAD_dc) / max(max( FAD + FAD_dc )) )
+    % title("FAD (with dark count noise)")
+    % axes(ha(2)), imshow( (NADH + NADH_dc) / max(max( NADH + NADH_dc )) )
+    % title("NADH (with dark count noise)")
+    % 
+    % 
+    % % Display original & final images
+    % figure
+    % ha = tight_subplot(1, 2, 0.05, 0.05, 0.05);
+    % axes(ha(1)), imshow(img_norm)
+    % title("Original Phantom Image (normalized)")
+    % axes(ha(2)), imshow(ORR)
+    % title("Simulated ORR Image")
 end 
 
 end 
