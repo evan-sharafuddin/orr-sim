@@ -11,11 +11,11 @@ clc
 close all
 
 %%% Set Model Params %%%
-pc = 5; % photon count
+pc = 100; % photon count
 
 %%% Load Image %%%
 MAXPIXEL = 255; 
-img = imread("Huerthle-cell-carcinoma-AgNOR-staining-x-1-073.png", "png");
+img = imread("images/Huerthle-cell-carcinoma-AgNOR-staining-x-1-073.png", "png");
 img_norm = double( img ) / MAXPIXEL;
 
 PRINT_FIGS = 1;
@@ -73,7 +73,10 @@ title( sprintf("(%d PC, %d iter) Pixelwise SNR of Simulated ORR image", pc, num_
 c = colorbar;
 c.Label.String = "Pixelwise SNR values (dB)";
 c.Label.FontWeight = "bold";
-
+caxis([-10 10])
+xlim([150 450]), ylim([150 450])
+set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+saveas(gcf, sprintf('SNR_px_%d.png', pc), 'png')
 
 % (2) Per pixel error based on reference image
 % NOTE currently having issues with edge cases driving up the error values
@@ -83,14 +86,35 @@ error = abs( (ORR - img_norm) ./ img_norm );
 % pixel values are around zero
 error(isnan(error) | isinf(error)) = 0;
 
+% figure, imagesc(error);
+% title( sprintf("(%d PC, %d iter) Pixelwise error values for simulated ORR image", pc, num_iter) )
+% c = colorbar;
+% % NOTE get spikes in values but these are only when ref image has a value
+% % of nearly zero (i.e., at a boarder) and we don't really care
+% caxis([0 1]); % set to 2 as max value on the colorbar
+% c.Label.String = "Pixelwise error values from ref image";
+% c.Label.FontWeight = "bold";
+% xlim([150 450]), ylim([150 450])
+% set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+% saveas(gcf, sprintf('error_px_%d.png', pc), 'png')
+
 figure, imagesc(error);
-title( sprintf("(%d PC, %d iter) Pixelwise error values for simulated ORR image", pc, num_iter) )
+title( sprintf("(%d PC, %d iter) Pixelwise error values for simulated ORR image", pc, num_iter), ...
+    'FontSize', 35, 'FontWeight', 'bold');
 c = colorbar;
 % NOTE get spikes in values but these are only when ref image has a value
 % of nearly zero (i.e., at a boarder) and we don't really care
 caxis([0 1]); % set to 2 as max value on the colorbar
-c.Label.String = "Pixelwise error values from ref image";
+c.Label.String = "Pixelwise Error";
+c.Label.FontSize = 35;
 c.Label.FontWeight = "bold";
+xlim([150 450]), ylim([150 450])
+set(gca, 'FontSize', 20); % Sets font size for axes numberings and labels
+set(gcf, 'Position', [100, 100, 300, 500]*2.5)
+ax = gca;
+ax.PositionConstraint = "outerposition";
+saveas(gcf, sprintf('error_px_%d.png', pc), 'png')
+
 
 
 % (3) Mean squared error based on reference image
