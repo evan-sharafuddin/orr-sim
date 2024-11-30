@@ -152,19 +152,19 @@ if DISP_FIGURES
     imshow(img_norm)
     title("Ground Truth Image", 'FontWeight', 'bold', ...
           'FontSize', 35)
-    xlim([150 450]), ylim([150 450])
+    % xlim([150 450]), ylim([150 450])
     set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
     ax = gca;
     ax.PositionConstraint = "outerposition";
-    saveas(gcf, 'cell_og.png', 'png')
+    saveas(gcf, 'phantom_og.png', 'png')
     
     figure
     imshow(ORR)
     title(sprintf("Simulated ORR Image | %d PC", pc), 'FontWeight', 'bold', ...
           'FontSize', 35)
-    xlim([150 450]), ylim([150 450])
+    % xlim([150 450]), ylim([150 450])
     set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
-    saveas(gcf, sprintf('cell_%d.png', pc), 'png')
+    saveas(gcf, sprintf('phantom_%d.png', pc), 'png')
 
 
     % %%% Display intermediaries 
