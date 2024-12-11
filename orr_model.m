@@ -102,7 +102,7 @@ while true
     vals_bin = vals >= cutoff;
     if abs( sum(vals_bin) - num_dark_counts ) <= tol
         vals_bin_FAD = vals_bin;
-        break;
+        break
     end
 end
 
@@ -122,15 +122,20 @@ if VERBOSE
 end
 
 % create binary image
-dark_counts = reshape(vals_bin, img_width, img_height);
+% dark_counts = reshape(vals_bin, img_width, img_height);
 % figure, imshow(dark_counts)
 
 %%% Add Together Noise %%%
 FAD_dc = reshape(vals_bin_FAD, img_width, img_height);
 NADH_dc = reshape(vals_bin_NADH, img_width, img_height);
 
+%%% UNCOMMENT FOR SHOT AND DARK
 FAD_ct = FAD_sn + FAD_dc;
 NADH_ct = NADH_sn + NADH_dc;
+
+%%% UNCOMMENT FOR SHOT ONLY
+% FAD_ct = FAD_sn;
+% NADH_ct = NADH_sn;
 
 % zero out all negative values (not physically possible)
 % FAD_ct(FAD_ct < 0) = 0;
@@ -151,9 +156,9 @@ if DISP_FIGURES
     figure
     imshow(img_norm)
     title("Ground Truth Image", 'FontWeight', 'bold', ...
-          'FontSize', 35)
+          'FontSize', 30)
     % xlim([150 450]), ylim([150 450])
-    set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+    set(gcf, 'Position',  [100, 100, 400, 500]*2)
     ax = gca;
     ax.PositionConstraint = "outerposition";
     saveas(gcf, 'phantom_og.png', 'png')
@@ -161,11 +166,19 @@ if DISP_FIGURES
     figure
     imshow(ORR)
     title(sprintf("Simulated ORR Image | %d PC", pc), 'FontWeight', 'bold', ...
-          'FontSize', 35)
+          'FontSize', 30)
     % xlim([150 450]), ylim([150 450])
-    set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+    set(gcf, 'Position',  [100, 100, 400, 500]*2)
     saveas(gcf, sprintf('phantom_%d.png', pc), 'png')
 
+    figure
+    imagesc(ORR)
+    c = colorbar;
+    colormap('gray')
+    c.FontSize = 18;
+    c.Label.String = 'Normalized intensity (a.u.)';
+    c.Label.FontWeight = 'bold';
+    % c.Label.FontSize = 25;
 
     % %%% Display intermediaries 
     % figure

@@ -3,15 +3,12 @@
 % Sorrells Lab
 % WashU
 
-% TODO need to resolve issues with the rounding
-% TODO need to think of image quality metric
-
 clear
 clc
 close all
 
 %%% Set Model Params %%%
-pc = 5; % photon count
+pc = 2; % photon count
 
 %%% Load Image %%%
 MAXPIXEL = 255; 
@@ -42,13 +39,21 @@ either mean/std or mean^2/std^2
 DB_PREFIX = 10; % TODO need to determine if its 10 or 20
 
 % (1) Per pixel SNR using multiple image calculations
-num_iter = 10;
+num_iter = 5e1;
 
 ORRs = ORR;
 
+fprintf("Starting %d iterations...\n", num_iter)
 for i = 1:num_iter-1
     ORRs = cat( 3, ORRs, orr_model(img_norm, pc) ); % concatenate along third dimension
+    if mod(i, 10) == 0
+        fprintf(".")
+    end
+    if mod(i, 100) == 0
+        fprintf("\n")
+    end
 end
+fprintf(" done!\n")
 
 mu_ORRs = mean(ORRs, 3);
 sigma_ORRs = std(ORRs, 0, 3);
@@ -69,10 +74,15 @@ dB_SNR_pixelwise = DB_PREFIX * log10(SNR_pixelwise);
 
 % plot colormap
 figure, imagesc(dB_SNR_pixelwise)
-title( sprintf("(%d PC, %d iter) Pixelwise SNR of Simulated ORR image", pc, num_iter) )
+title( sprintf("(%d PC, %d iter)\nPixelwise SNR of Simulated ORR", pc, num_iter), ...
+    'FontSize', 30, 'FontWeight', 'bold')
+ax = gca;
+ax.FontSize = 18;
 c = colorbar;
 c.Label.String = "Pixelwise SNR values (dB)";
+c.Label.FontSize = 25;
 c.Label.FontWeight = "bold";
+c.FontSize = 18;
 caxis([-10 10])
 % xlim([150 450]), ylim([150 450])
 set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
