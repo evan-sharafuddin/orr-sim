@@ -9,8 +9,8 @@ close all
 % ls = 1:30; % lambda1 + lambda2
 
 % Init max values for lambda1 (FAD) and lambda2 (NADH)
-l1m = 30;
-l2m = 30; 
+l1m = 100;
+l2m = 100; 
 
 % rows are l2 (vertical), columns are l1 (horizontal)
 m_var = zeros(l2m, l1m);
@@ -49,6 +49,10 @@ for l2 = 1:l2m
         m_var(l2, l1) = res;
         m_mu(l2, l1)  = l1 / (l1 + l2);
     end
+
+    % keep track of progress
+    fprintf(".");
+    if mod(l2, 10) == 0; fprintf("\n"); end
 end
 
 % calculate std from variance
@@ -126,7 +130,7 @@ nadh_lim = l2m;
 % create meshgrids
 [FAD, NADH] = meshgrid( 1:l1m, 1:l2m );
 
-figure, surf( FAD, NADH, m_snr )
+figure, surf( FAD, NADH, m_var )
 xlabel("FAD Photon Counts")
 ylabel("NAD(P)H Photon Counts")
-zlabel("SNR (dB)")
+zlabel("Variance (dB)")
