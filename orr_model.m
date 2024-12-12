@@ -1,7 +1,8 @@
 
 function ORR = orr_model( ...
     img_norm, ... Normalized "ideal image" that will be used to drive the ORR simulator
-    pc,  ... Sum of photon counts in NADH and FAD channels (assumes same for each pixel)
+    pc_fad,  ... Photon counts in FAD channel
+    pc_nadh, ... Photon counts in NADH channel
     DISP_FIGURES, ... Flag to display figures
     VERBOSE ... Verbose output
 )
@@ -16,8 +17,10 @@ if nargin < 3
     DISP_FIGURES = 0; % default behavior is to not print figures
 end
 
+% TODO this needs to be fixed
 if nargin < 2
-    pc = 50; % default photon count value 
+    pc_fad = 50; % default photon count value
+    pc_nadh = 50;
 end 
 
 if nargin < 1
@@ -29,8 +32,9 @@ end
 %%% Calculate FAD and NAD(P)H Intensities %%%
 % Assume that FAD+NAD(P)H = photon_count
 
-FAD = img_norm * pc;
-NADH = pc - FAD;
+FAD = img_norm * pc_fad;
+% TODO experiment with this next line
+NADH = (1-img_norm) * pc_nadh * 0.5; % invert and scale down NADH
 
 % round values
 FAD  = round( FAD );
@@ -83,7 +87,7 @@ num_dark_counts = img_width * img_height * t_dwell * detector_cps;
 
 mu = 0; sigma = 1; % choose normal distribution
 
-tol = 50; % how close to the num_dark_counts value our binary image has to be
+tol = 5; % how close to the num_dark_counts value our binary image has to be
 
 chance = num_dark_counts/img_width/img_height;
 prob_is_greater_x = @(x) 1 - cdf('Normal', x, mu, sigma);
@@ -157,19 +161,17 @@ if DISP_FIGURES
     imshow(img_norm)
     title("Ground Truth Image", 'FontWeight', 'bold', ...
           'FontSize', 30)
-    % xlim([150 450]), ylim([150 450])
-    set(gcf, 'Position',  [100, 100, 400, 500]*2)
+    % set(gcf, 'Position',  [100, 100, 400, 500]*2)
     ax = gca;
     ax.PositionConstraint = "outerposition";
-    saveas(gcf, 'phantom_og.png', 'png')
+    % saveas(gcf, 'phantom_og.png', 'png')
     
-    figure
-    imshow(ORR)
-    title(sprintf("Simulated ORR Image | %d PC", pc), 'FontWeight', 'bold', ...
-          'FontSize', 30)
-    % xlim([150 450]), ylim([150 450])
-    set(gcf, 'Position',  [100, 100, 400, 500]*2)
-    saveas(gcf, sprintf('phantom_%d.png', pc), 'png')
+    % figure
+    % imshow(ORR)
+    % title(sprintf("Simulated ORR Image | %d PC", pc), 'FontWeight', 'bold', ...
+          % 'FontSize', 30)
+    % set(gcf, 'Position',  [100, 100, 400, 500]*2)
+    % saveas(gcf, sprintf('phantom_%d.png', pc), 'png')
 
     figure
     imagesc(ORR)

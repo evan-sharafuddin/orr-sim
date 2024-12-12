@@ -8,7 +8,8 @@ clc
 close all
 
 %%% Set Model Params %%%
-pc = 2; % photon count
+pc_fad = 2000; % FAD channel photon counts
+pc_nadh = 2000; % NADH channel photon counts
 
 %%% Load Image %%%
 MAXPIXEL = 255; 
@@ -19,7 +20,7 @@ PRINT_FIGS = 1;
 VERBOSE_PRINT = 0;
 
 %%% Calculate ORR %%%
-ORR = orr_model( img_norm, pc, PRINT_FIGS, VERBOSE_PRINT );
+ORR = orr_model( img_norm, pc_fad, pc_nadh, PRINT_FIGS, VERBOSE_PRINT );
 
 %%
 
@@ -85,8 +86,8 @@ c.Label.FontWeight = "bold";
 c.FontSize = 18;
 caxis([-10 10])
 % xlim([150 450]), ylim([150 450])
-set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
-saveas(gcf, sprintf('SNR_px_%d.png', pc), 'png')
+% set(gcf, 'Position',  [100, 100, 300, 500]*2.5)
+% saveas(gcf, sprintf('SNR_px_%d.png', pc), 'png')
 
 % (2) Per pixel error based on reference image
 % NOTE currently having issues with edge cases driving up the error values
@@ -120,10 +121,10 @@ c.Label.FontSize = 35;
 c.Label.FontWeight = "bold";
 % xlim([150 450]), ylim([150 450])
 set(gca, 'FontSize', 20); % Sets font size for axes numberings and labels
-set(gcf, 'Position', [100, 100, 300, 500]*2.5)
+% set(gcf, 'Position', [100, 100, 300, 500]*2.5)
 ax = gca;
 ax.PositionConstraint = "outerposition";
-saveas(gcf, sprintf('error_px_%d.png', pc), 'png')
+% saveas(gcf, sprintf('error_px_%d.png', pc), 'png')
 
 
 
